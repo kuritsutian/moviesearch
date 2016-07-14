@@ -1,0 +1,173 @@
+<html>
+<head>
+<style>
+
+body{
+	font-family: Arial,sans-serif;
+	color: lightgoldenrodyellow;
+}
+.container{
+	height: auto;
+	border:#1e1e1e;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	border-style: solid;
+	border-radius: 10px;
+	border-width: 1px;
+	display:block;	
+	background: linear-gradient(#404040,#1e1e1e);	
+}
+.headers{
+	background: linear-gradient(#404040,#1e1e1e);	
+	padding-bottom: 10px;
+	padding-top: 10px;
+	padding-left: 20px;
+}
+
+.searchForm{
+	background: linear-gradient(#5a7825,#49611e);
+	padding-bottom: 10px;
+	padding-top: 10px;
+	padding-left: 20px;
+	font-size: 12px;
+}
+.searchForm input{
+		border-radius: 20px;
+		font-size: big;
+		font-family: Arial,sans-serif;
+		padding: 5px;
+		margin-right:5px;
+		width: 500;
+}
+.searchForm select{
+		border-radius: 5px;
+		font-family: Arial,sans-serif;
+		padding: 5px;
+		margin-bottom: 10px;
+		width: 650;
+}
+.buttons{
+		border-radius: 5px;
+		font-family: Arial,sans-serif;
+		padding: 5px;
+		margin-bottom: 10px;
+		width: 140 !important;
+		background-color: #404040;
+		color: lightgoldenrodyellow !important;
+}
+
+.results{
+	color: #404040 !important;
+	padding-left: 20px;
+	font-family: Arial,sans-serif;
+	background-color:  lightgoldenrodyellow;
+	margin-top : -15px !important;
+	height: 225px;
+	overflow-y: auto;
+}
+
+.results a{
+	color: #5a7825 !important;
+	padding-left: 20px;
+	font-family: Arial,sans-serif;
+	font-size: large;
+	margin-right: 10px;
+}
+
+.footer{
+	background: linear-gradient(#404040,#1e1e1e);	
+	padding-left: 20px;
+	padding-top: 3px;
+	padding-bottom: 2px;
+	font-family: Arial,sans-serif;
+	position: relative;
+	float: bottom;
+}
+
+</style>
+
+<script>
+function loadList(){
+
+	var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                document.getElementById("list_td").innerHTML = xmlhttp.responseText;
+            }
+        }
+        xmlhttp.open("GET", "APIInterface.php?type=list", true);
+        xmlhttp.send();
+}
+function fillName(){
+	
+	var mySelect = document.getElementById("popular_list");
+	var str = mySelect.value;
+	
+	if(str != 0){
+		document.getElementById("actor").value = str;
+		document.getElementById("actor_name").value = mySelect.options[mySelect.selectedIndex].text;
+	} else document.getElementById("actor").value = 0;
+}
+function movieLookup() {
+	
+	var str = document.getElementById("actor").value;
+	var name = document.getElementById("actor_name").value;
+	
+	if (str.length == 0) { 
+        document.getElementById("txtHint").innerHTML = "";
+        return;
+    } else {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
+            }
+        }
+        xmlhttp.open("GET", "APIInterface.php?type=movies&actor=" + str + "&name=" + name, true);
+        xmlhttp.send();
+    }
+}
+function cleanActor(){
+	document.getElementById("actor").value = 0;
+	document.getElementById("popular_list").value = 0;
+}
+</script>
+
+<meta charset="UTF-8">
+<meta name="keywords" content="Movie search by artist">
+<meta name="description" content="Test to show php programming skills">
+<meta name="author" content="Cristian Solano">
+</head>
+<body onload="loadList()">
+	<title>Movie Search</title>
+	<div class="container">
+		<div class="headers">
+			<h1>Search your Movie by Artist</h1>
+			Powered by:
+			<br>
+			<img src="PoweredBy_Logo.png"/>
+		</div>
+		<div class="searchForm">
+			<form >
+				<span id="list_td">
+					<select id="dummy" name="dummy"">
+						<option value="0" selected>Loading...</option>
+					</select>
+				</span>
+				</br>
+				<input id="actor_name" type="text" onkeyup="cleanActor();" />
+				<input id="actor" type="hidden" />
+				<input id="search" class="buttons" type="button" value="search" onclick="movieLookup()"/>
+			</form>
+			<p><b> - To start type the name of the Actor/Actress on the field or select it from the list of popular Actors:</b></p>
+
+		</div>
+		<div class="results">
+			<p><span id="txtHint"></span></p>
+		</div>
+		<div class="footer">
+			<p>Created by: Cristian Solano</p>
+		</div>
+	</div>
+</body>
+</html>
